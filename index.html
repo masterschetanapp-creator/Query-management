@@ -10,6 +10,7 @@
 <style>
 :root{--bg:#eef3f6;--card:#fff;--card2:#f8fafc;--line:#dbe4ea;--text:#17212b;--muted:#6b7b88;--brand:#0f766e;--brand2:#115e59;--blue:#2563eb;--green:#15803d;--red:#dc2626;--orange:#c2410c;--shadow:0 2px 12px rgba(15,23,42,.08);--r:8px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif;font-size:14px}.top{height:60px;background:linear-gradient(135deg,#0f766e,#2563eb);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 22px;box-shadow:0 2px 14px rgba(15,118,110,.25);position:sticky;top:0;z-index:5}.logo{font-size:18px;font-weight:750}.stats{display:flex;gap:24px}.hs{text-align:center}.hs b{display:block;font-size:18px}.hs span{font-size:10px;text-transform:uppercase;opacity:.78}.wrap{max-width:1420px;margin:0 auto;padding:20px}.toolbar,.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.toolbar{padding:14px;display:grid;grid-template-columns:1.4fr repeat(4,minmax(145px,.6fr)) auto;gap:10px;margin-bottom:16px}.toolbar.query-active{grid-template-columns:1.4fr auto}.panel{overflow:hidden}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}.card small{color:var(--muted);font-weight:650;text-transform:uppercase;font-size:11px}.card strong{display:block;font-size:28px;margin-top:5px}.card.green{border-top:4px solid var(--green)}.card.orange{border-top:4px solid var(--orange)}.card.red{border-top:4px solid var(--red)}.card.blue{border-top:4px solid var(--blue)}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:10px 11px;font:inherit;background:#fff;color:var(--text)}textarea{min-height:96px;resize:vertical}.btn{border:0;border-radius:7px;padding:10px 13px;font:inherit;font-weight:650;cursor:pointer;white-space:nowrap}.btn.primary{background:var(--brand);color:#fff}.btn.primary:hover{background:var(--brand2)}.btn.gray{background:#e8eef2;color:#1f2937}.btn.red{background:#fee2e2;color:#991b1b}.btn.blue{background:#dbeafe;color:#1e40af}.btn-link{background:none;border:none;cursor:pointer;color:var(--muted);font-size:11px;padding:2px 4px}.btn-link:hover{color:var(--text)}.actions{display:flex;gap:8px;justify-content:flex-end}.bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--card2)}.bar>div{display:flex;align-items:center;gap:10px}.statusline{font-size:12px;color:var(--muted)}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;padding:10px 12px;font-size:12px;text-transform:uppercase;color:var(--muted);background:var(--card2);border-bottom:1px solid var(--line)}td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px}td.name{font-weight:650}td.note{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:650}.pill.converted{background:#dcfce7;color:#15803d}.pill.follow{background:#dbeafe;color:#1e40af}.pill.not{background:#fef3c7;color:#92400e}.pill.wait{background:#f3e8ff;color:#6b21a8}.pager{display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 16px}.modalBg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:10;align-items:center;justify-content:center}.modalBg.open{display:flex}.modal{background:var(--card);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:24px;width:92%;max-width:640px;max-height:90vh;overflow-y:auto}.modal--wide{max-width:800px}.modal h2{margin:0 0 4px}.sub{font-size:13px;color:var(--muted);margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:3px}.field label{font-size:12px;font-weight:650;color:var(--muted)}.field.wide{grid-column:1/-1}.toastbox{position:fixed;bottom:20px;right:20px;z-index:20;display:flex;flex-direction:column;gap:8px}.toast{background:#17212b;color:#fff;padding:10px 20px;border-radius:var(--r);box-shadow:0 4px 16px rgba(0,0,0,.2);font-size:13px;animation:fin .25s ease}@keyframes fin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}.toast.err{background:#dc2626;color:#fff}.toast.ok{background:#15803d;color:#fff}.auth-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0f766e,#2563eb);z-index:50;align-items:center;justify-content:center}.auth-overlay.open{display:flex}.auth-box{background:#fff;border-radius:16px;padding:40px 36px;width:92%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.2);text-align:center}.auth-box .auth-logo{font-size:24px;font-weight:750;color:var(--brand);margin-bottom:4px}.auth-box .auth-sub{color:var(--muted);margin:0 0 20px;font-size:14px}.auth-box input{margin-bottom:12px}.auth-msg{color:var(--red);font-size:13px;margin-top:10px;min-height:20px}.auth-signout{position:absolute;top:14px;right:18px;z-index:6}.queries-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;margin-bottom:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);flex-wrap:wrap}.queries-bar .query-label{font-weight:650;color:var(--brand);font-size:13px}.queries-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}.query-chip{display:inline-flex;align-items:center;gap:4px;background:#f0f4f8;border:1px solid var(--line);border-radius:99px;padding:3px 8px 3px 12px;font-size:12px;cursor:default}.query-chip.active{background:#dbeafe;border-color:var(--blue)}.query-chip .query-chip-name{cursor:pointer;font-weight:650}.query-chip .query-chip-count{background:var(--brand);color:#fff;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:650}.query-match{margin-bottom:12px}.query-match select{width:auto;padding:6px 10px;margin-left:6px}.qc-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}.qc-row select{padding:8px 10px;width:auto;min-width:120px}.qc-row .qf-val-wrap{display:flex;align-items:center;gap:4px;flex:1}.qc-row .qf-val-wrap input,.qc-row .qf-val-wrap select{width:auto;flex:1;min-width:80px}.query-preview{color:var(--muted);font-size:13px;margin:12px 0}.query-preview strong{color:var(--text)}@media(max-width:860px){.toolbar{grid-template-columns:1fr 1fr}.toolbar.query-active{grid-template-columns:1fr auto}.cards{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.stats{display:none}.qc-row{flex-wrap:wrap}}
+.tabs{display:flex;gap:0;margin-bottom:20px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}.tab{flex:1;padding:12px 20px;border:0;background:var(--card);font:inherit;font-size:14px;font-weight:650;cursor:pointer;color:var(--muted);transition:all .15s;border-bottom:3px solid transparent}.tab:hover{background:var(--card2);color:var(--text)}.tab.active{color:var(--brand);border-bottom-color:var(--brand);background:var(--card2)}.toolbar.qgrid{grid-template-columns:1.4fr 1.4fr 1.4fr auto}@media(max-width:860px){.toolbar.qgrid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -35,43 +36,77 @@
     <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:6px 14px" onclick="handleSignOut()">Sign Out</button>
   </div>
   <main class="wrap">
-    <section class="cards">
-      <div class="card blue"><small>Total Leads</small><strong id="cTotal">0</strong></div>
-      <div class="card orange"><small>Open / Active</small><strong id="cOpen">0</strong></div>
-      <div class="card red"><small>Overdue Follow-ups</small><strong id="cOverdue">0</strong></div>
-      <div class="card green"><small>Converted</small><strong id="cConverted">0</strong></div>
-      <div class="card"><small>Due Today</small><strong id="cToday">0</strong></div>
-    </section>
-    <section class="toolbar" id="mainToolbar">
-      <input id="search" placeholder="Search lead, phone, email, notes..." oninput="state.q=this.value.trim().toLowerCase();state.page=1;render()">
-      <select id="statusFilter" class="legacy-filter" onchange="state.status=this.value;state.page=1;render()"><option value="">All Status</option></select>
-      <select id="productFilter" class="legacy-filter" onchange="state.product=this.value;state.page=1;render()"><option value="">All Products</option></select>
-      <select id="sourceFilter" class="legacy-filter" onchange="state.source=this.value;state.page=1;render()"><option value="">All Sources</option></select>
-      <select id="dueFilter" class="legacy-filter" onchange="state.due=this.value;state.page=1;render()"><option value="">All Follow-ups</option><option value="today">Due Today</option><option value="overdue">Overdue</option><option value="upcoming">Upcoming</option><option value="none">No Follow-up</option></select>
-      <div class="actions">
-        <button class="btn primary" onclick="openLead()">Add Lead</button>
-        <button class="btn blue" onclick="exportCSV()">Export CSV</button>
-        <button class="btn gray" onclick="openQueryBuilder()">Queries</button>
-      </div>
-    </section>
-    <div class="queries-bar" id="queriesBar">
-      <div class="queries-chips" id="queriesChips"></div>
-      <div class="queries-actions" id="queriesActions" style="display:none">
-        <span class="query-label" id="activeQueryLabel"></span>
-        <button class="btn gray" style="font-size:12px;padding:4px 10px" onclick="clearActiveQuery()">Clear</button>
-      </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="leads" onclick="switchTab('leads')">Leads</button>
+      <button class="tab" data-tab="queries" onclick="switchTab('queries')">Service Queries</button>
     </div>
-    <section class="panel">
-      <div class="bar">
-        <div><strong>Leads</strong><span class="statusline" id="saveStatus">Connecting to Firebase...</span></div>
+    <div id="leadsSection">
+      <section class="cards">
+        <div class="card blue"><small>Total Leads</small><strong id="cTotal">0</strong></div>
+        <div class="card orange"><small>Open / Active</small><strong id="cOpen">0</strong></div>
+        <div class="card red"><small>Overdue Follow-ups</small><strong id="cOverdue">0</strong></div>
+        <div class="card green"><small>Converted</small><strong id="cConverted">0</strong></div>
+        <div class="card"><small>Due Today</small><strong id="cToday">0</strong></div>
+      </section>
+      <section class="toolbar" id="mainToolbar">
+        <input id="search" placeholder="Search lead, phone, email, notes..." oninput="state.q=this.value.trim().toLowerCase();state.page=1;render()">
+        <select id="statusFilter" class="legacy-filter" onchange="state.status=this.value;state.page=1;render()"><option value="">All Status</option></select>
+        <select id="productFilter" class="legacy-filter" onchange="state.product=this.value;state.page=1;render()"><option value="">All Products</option></select>
+        <select id="sourceFilter" class="legacy-filter" onchange="state.source=this.value;state.page=1;render()"><option value="">All Sources</option></select>
+        <select id="dueFilter" class="legacy-filter" onchange="state.due=this.value;state.page=1;render()"><option value="">All Follow-ups</option><option value="today">Due Today</option><option value="overdue">Overdue</option><option value="upcoming">Upcoming</option><option value="none">No Follow-up</option></select>
         <div class="actions">
-          <button class="btn gray" onclick="importLegacyJSON()">Import JSON</button>
-          <button class="btn gray" onclick="downloadDB()">Download DB</button>
+          <button class="btn primary" onclick="openLead()">Add Lead</button>
+          <button class="btn blue" onclick="exportCSV()">Export CSV</button>
+          <button class="btn gray" onclick="openQueryBuilder()">Custom Filter</button>
+        </div>
+      </section>
+      <div class="queries-bar" id="queriesBar">
+        <div class="queries-chips" id="queriesChips"></div>
+        <div class="queries-actions" id="queriesActions" style="display:none">
+          <span class="query-label" id="activeQueryLabel"></span>
+          <button class="btn gray" style="font-size:12px;padding:4px 10px" onclick="clearActiveQuery()">Clear</button>
         </div>
       </div>
-      <div class="tablewrap"><table><thead><tr><th>S.No</th><th>Lead</th><th>Contact</th><th>Inquiry</th><th>Source</th><th>Product</th><th>Status</th><th>Follow-up</th><th>Notes</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
-      <div class="pager"><button class="btn gray" onclick="prevPage()">Previous</button><span id="pageInfo"></span><button class="btn gray" onclick="nextPage()">Next</button></div>
-    </section>
+      <section class="panel">
+        <div class="bar">
+          <div><strong>Leads</strong><span class="statusline" id="saveStatus">Connecting to Firebase...</span></div>
+          <div class="actions">
+            <button class="btn gray" onclick="importLegacyJSON()">Import JSON</button>
+            <button class="btn gray" onclick="downloadDB()">Download DB</button>
+          </div>
+        </div>
+        <div class="tablewrap"><table><thead><tr><th>S.No</th><th>Lead</th><th>Contact</th><th>Inquiry</th><th>Source</th><th>Product</th><th>Status</th><th>Follow-up</th><th>Notes</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+        <div class="pager"><button class="btn gray" onclick="prevPage()">Previous</button><span id="pageInfo"></span><button class="btn gray" onclick="nextPage()">Next</button></div>
+      </section>
+    </div>
+    <div id="queriesSection" style="display:none">
+      <section class="cards" id="queriesCards">
+        <div class="card blue"><small>Total Queries</small><strong id="qcTotal">0</strong></div>
+        <div class="card orange"><small>Open</small><strong id="qcOpen">0</strong></div>
+        <div class="card red"><small>Under Process</small><strong id="qcProcess">0</strong></div>
+        <div class="card green"><small>Resolved</small><strong id="qcResolved">0</strong></div>
+        <div class="card"><small>Due Today</small><strong id="qcDue">0</strong></div>
+      </section>
+      <section class="toolbar qgrid" id="queriesToolbar">
+        <input id="qSearch" placeholder="Search customer, notes..." oninput="qState.q=this.value.trim().toLowerCase();qState.page=1;renderQueriesTab()">
+        <select id="deptFilter" onchange="qState.dept=this.value;qState.page=1;renderQueriesTab()"><option value="">All Departments</option></select>
+        <select id="qStatusFilter" onchange="qState.status=this.value;qState.page=1;renderQueriesTab()"><option value="">All Status</option><option value="Open">Open</option><option value="Under Process">Under Process</option><option value="Resolved">Resolved</option></select>
+        <div class="actions">
+          <button class="btn primary" onclick="openQueryForm()">Add Query</button>
+          <button class="btn blue" onclick="exportQueriesCSV()">Export CSV</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="bar">
+          <div><strong>Service Queries</strong><span class="statusline">Firebase-synced</span></div>
+          <div class="actions">
+            <button class="btn gray" onclick="downloadQueriesDB()">Download DB</button>
+          </div>
+        </div>
+        <div class="tablewrap"><table><thead><tr><th>S.No</th><th>Customer</th><th>Department</th><th>Query Date</th><th>Status</th><th>Follow-up</th><th>Notes</th><th></th></tr></thead><tbody id="qRows"></tbody></table></div>
+        <div class="pager"><button class="btn gray" onclick="prevQPage()">Previous</button><span id="qPageInfo"></span><button class="btn gray" onclick="nextQPage()">Next</button></div>
+      </section>
+    </div>
   </main>
   <div class="modalBg" id="leadModal">
     <div class="modal">
@@ -110,6 +145,21 @@
         <button class="btn blue" onclick="saveQuery()">Save</button>
         <button class="btn primary" onclick="applyCurrentQuery()">Apply</button>
       </div>
+    </div>
+  </div>
+  <div class="modalBg" id="queryFormModal">
+    <div class="modal">
+      <h2 id="qModalTitle">Add Query</h2>
+      <div class="sub">Service queries sync across all devices via Firebase.</div>
+      <div class="grid">
+        <div class="field"><label>Customer Name</label><input id="qfName"></div>
+        <div class="field"><label>Department</label><select id="qfDept"><option value="">Select department</option><option>Mediclaim</option><option>Motor</option><option>Travel</option><option>Mutual Fund</option><option>Life/Term Insurance</option><option>Equity</option><option>FD/Bonds</option></select></div>
+        <div class="field"><label>Query Date</label><input type="date" id="qfDate"></div>
+        <div class="field"><label>Status</label><select id="qfStatus"><option value="Open">Open</option><option value="Under Process">Under Process</option><option value="Resolved">Resolved</option></select></div>
+        <div class="field"><label>Follow-up Date</label><input type="date" id="qfFollow"></div>
+        <div class="field wide"><label>Notes / Remarks</label><textarea id="qfNotes"></textarea></div>
+      </div>
+      <div class="actions" style="margin-top:16px"><button class="btn gray" onclick="closeQueryForm()">Cancel</button><button class="btn red" id="qDeleteBtn" onclick="deleteQuery()" style="display:none">Delete</button><button class="btn primary" onclick="saveQueryForm()">Save Query</button></div>
     </div>
   </div>
   <datalist id="sourceList"></datalist>

@@ -51,6 +51,12 @@ let authInitialized = false;
 
 const state = { q: "", status: "", product: "", source: "", due: "", page: 1 };
 window.state = state;
+let queries = [];
+let queryEditingId = null;
+let unsubscribeQueries = null;
+const qState = { q: "", dept: "", status: "", page: 1 };
+window.qState = qState;
+let activeTab = "leads";
 
 const today = () => new Date().toISOString().slice(0, 10);
 const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -85,6 +91,7 @@ onAuthStateChanged(auth, (user) => {
     if (!authInitialized) {
       authInitialized = true;
       setupLeadsListener();
+      setupQueriesListener();
       initQueries();
     }
   } else {
@@ -124,8 +131,10 @@ window.handleSignIn = handleSignIn;
 async function handleSignOut() {
   try {
     if (unsubscribeLeads) unsubscribeLeads();
+    if (unsubscribeQueries) unsubscribeQueries();
     await signOut(auth);
     leads = [];
+    queries = [];
     authInitialized = false;
   } catch (e) {
     console.error("Sign out failed", e);
@@ -153,6 +162,24 @@ function setupLeadsListener() {
     },
     (err) => {
       console.error("Leads listener error", err);
+      toast("Firestore sync error: " + err.message, "err");
+    },
+  );
+}
+
+function setupQueriesListener() {
+  if (unsubscribeQueries) unsubscribeQueries();
+  unsubscribeQueries = onSnapshot(
+    collection(db, "serviceQueries"),
+    (snapshot) => {
+      queries = [];
+      snapshot.forEach((d) => {
+        queries.push({ id: d.id, ...d.data() });
+      });
+      renderQueriesTab();
+    },
+    (err) => {
+      console.error("Queries listener error", err);
       toast("Firestore sync error: " + err.message, "err");
     },
   );
@@ -488,11 +515,180 @@ function importLegacyJSON() {
 
 window.importLegacyJSON = importLegacyJSON;
 
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+  document.getElementById("leadsSection").style.display = tab === "leads" ? "" : "none";
+  document.getElementById("queriesSection").style.display = tab === "queries" ? "" : "none";
+  if (tab === "queries") renderQueriesTab();
+}
+window.switchTab = switchTab;
+
+function queryStats() {
+  const t = today();
+  let open = 0, process = 0, resolved = 0, dueToday = 0;
+  for (const q of queries) {
+    const st = norm(q.status).toLowerCase();
+    if (st === "open") open++;
+    else if (st === "under process") process++;
+    else if (st === "resolved") resolved++;
+    if (q.followupDate === t) dueToday++;
+  }
+  return { total: queries.length, open, process, resolved, dueToday };
+}
+
+function renderQueriesTab() {
+  const s = queryStats();
+  document.getElementById("qcTotal").textContent = s.total;
+  document.getElementById("qcOpen").textContent = s.open;
+  document.getElementById("qcProcess").textContent = s.process;
+  document.getElementById("qcResolved").textContent = s.resolved;
+  document.getElementById("qcDue").textContent = s.dueToday;
+
+  const sq = norm(document.getElementById("qSearch").value).toLowerCase();
+  const dept = document.getElementById("deptFilter").value;
+  const st = document.getElementById("qStatusFilter").value;
+
+  let filtered = queries.filter(q => {
+    if (dept && q.department !== dept) return false;
+    if (st && norm(q.status) !== st) return false;
+    if (sq && !Object.values(q).join(" ").toLowerCase().includes(sq)) return false;
+    return true;
+  }).sort((a, b) => (a.followupDate || "9999").localeCompare(b.followupDate || "9999"));
+
+  fillDeptFilter(filtered);
+
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  qState.page = Math.min(qState.page, pages);
+  const part = filtered.slice((qState.page - 1) * pageSize, qState.page * pageSize);
+
+  document.getElementById("qRows").innerHTML = part.map(queryRowHtml).join("") || '<tr><td colspan="8" style="text-align:center;color:#6b7b88;padding:28px">No queries found</td></tr>';
+  document.getElementById("qPageInfo").textContent = "Page " + qState.page + " of " + pages + " - " + filtered.length + " quer" + (filtered.length === 1 ? "y" : "ies");
+}
+
+function fillDeptFilter(list) {
+  const vals = [...new Set(list.map(q => q.department).filter(Boolean))].sort();
+  const el = document.getElementById("deptFilter");
+  const cur = el.value;
+  el.innerHTML = '<option value="">All Departments</option>' + vals.map(v => `<option ${v === cur ? "selected" : ""}>${esc(v)}</option>`).join("");
+}
+
+function queryRowHtml(q) {
+  const st = norm(q.status);
+  const dept = q.department || "";
+  return `<tr><td>${esc(q.sno)}</td><td class="name">${esc(q.customerName)}</td><td>${esc(dept)}</td><td>${fmt(q.queryDate)}</td><td><span class="pill ${qpill(st)}">${esc(st || "Open")}</span></td><td>${fmt(q.followupDate)}</td><td class="note">${esc(q.note)}</td><td><button class="btn gray" onclick="window.openQueryForm('${q.id}')">Edit</button></td></tr>`;
+}
+
+function qpill(st) {
+  st = st.toLowerCase();
+  if (st === "resolved") return "converted";
+  if (st === "under process") return "follow";
+  return "";
+}
+
+function openQueryForm(id = "") {
+  queryEditingId = id;
+  const q = queries.find(x => x.id === id) || {};
+  document.getElementById("qModalTitle").textContent = id ? "Edit Query" : "Add Query";
+  document.getElementById("qDeleteBtn").style.display = id ? "inline-block" : "none";
+  document.getElementById("qfName").value = q.customerName || "";
+  document.getElementById("qfDept").value = q.department || "";
+  document.getElementById("qfDate").value = q.queryDate || "";
+  document.getElementById("qfStatus").value = q.status || "Open";
+  document.getElementById("qfFollow").value = q.followupDate || "";
+  document.getElementById("qfNotes").value = q.note || "";
+  document.getElementById("queryFormModal").classList.add("open");
+  setTimeout(() => document.getElementById("qfName").focus(), 50);
+}
+window.openQueryForm = openQueryForm;
+
+function closeQueryForm() {
+  document.getElementById("queryFormModal").classList.remove("open");
+}
+window.closeQueryForm = closeQueryForm;
+
+async function saveQueryForm() {
+  const name = norm(document.getElementById("qfName").value);
+  if (!name) { toast("Customer name is required", "err"); return; }
+  const id = queryEditingId || "q_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+  const rec = {
+    customerName: name,
+    department: document.getElementById("qfDept").value,
+    queryDate: document.getElementById("qfDate").value,
+    status: document.getElementById("qfStatus").value,
+    followupDate: document.getElementById("qfFollow").value,
+    note: norm(document.getElementById("qfNotes").value),
+    updatedAt: serverTimestamp(),
+  };
+  if (!queryEditingId) {
+    rec.sno = String(queries.length + 1);
+    rec.createdAt = serverTimestamp();
+  }
+  try {
+    await setDoc(doc(db, "serviceQueries", id), rec, { merge: true });
+    closeQueryForm();
+    toast("Query saved", "ok");
+  } catch (e) {
+    toast("Save failed: " + e.message, "err");
+    console.error("Query save error", e);
+  }
+}
+window.saveQueryForm = saveQueryForm;
+
+async function deleteQuery() {
+  if (!queryEditingId) return;
+  if (!confirm("Delete this query?")) return;
+  try {
+    await deleteDoc(doc(db, "serviceQueries", queryEditingId));
+    closeQueryForm();
+    toast("Query deleted");
+  } catch (e) {
+    toast("Delete failed: " + e.message, "err");
+    console.error("Query delete error", e);
+  }
+}
+window.deleteQuery = deleteQuery;
+
+function prevQPage() {
+  if (qState.page > 1) { qState.page--; renderQueriesTab(); }
+}
+function nextQPage() {
+  qState.page++; renderQueriesTab();
+}
+window.prevQPage = prevQPage;
+window.nextQPage = nextQPage;
+
+function exportQueriesCSV() {
+  const cols = ["S.No", "Customer Name", "Department", "Query Date", "Status", "Follow-up Date", "Notes"];
+  const sq = norm(document.getElementById("qSearch").value).toLowerCase();
+  const dept = document.getElementById("deptFilter").value;
+  const st = document.getElementById("qStatusFilter").value;
+  let filtered = queries.filter(q => {
+    if (dept && q.department !== dept) return false;
+    if (st && norm(q.status) !== st) return false;
+    if (sq && !Object.values(q).join(" ").toLowerCase().includes(sq)) return false;
+    return true;
+  }).sort((a, b) => (a.followupDate || "9999").localeCompare(b.followupDate || "9999"));
+  const data = filtered.map(q => [q.sno, q.customerName, q.department, q.queryDate, q.status, q.followupDate, q.note]);
+  const csv = [cols, ...data].map(r => r.map(v => '"' + String(v ?? "").replace(/"/g, '""') + '"').join(",")).join("\r\n");
+  download("service_queries_export_" + today() + ".csv", csv, "text/csv");
+}
+window.exportQueriesCSV = exportQueriesCSV;
+
+function downloadQueriesDB() {
+  const data = { version: 1, exportedAt: new Date().toISOString(), queries };
+  download("service_queries_db.json", JSON.stringify(data, null, 2), "application/json");
+}
+window.downloadQueriesDB = downloadQueriesDB;
+
 document.getElementById("leadModal").addEventListener("click", (e) => {
   if (e.target === document.getElementById("leadModal")) closeLead();
 });
 document.getElementById("queryModal").addEventListener("click", (e) => {
   if (e.target === document.getElementById("queryModal")) closeQueryBuilder();
+});
+document.getElementById("queryFormModal").addEventListener("click", (e) => {
+  if (e.target === document.getElementById("queryFormModal")) closeQueryForm();
 });
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
