@@ -1,0 +1,18 @@
+{
+  "name": "Lead Tracker",
+  "short_name": "Leads",
+  "description": "Lead tracker with Firebase sync across devices and custom query management.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f6",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
