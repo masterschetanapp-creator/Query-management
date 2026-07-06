@@ -271,7 +271,10 @@ function filtered() {
   return leads
     .filter((l) => {
       if (!activeQuery) {
-        if (state.pendingOnly && !state.status && norm(l.status).toLowerCase().includes("convert")) return false;
+        if (state.pendingOnly && !state.status) {
+          const sl = norm(l.status).toLowerCase();
+          if (sl.includes("convert") || sl.includes("not interested") || sl.includes("cancel")) return false;
+        }
         if (state.status && l.status !== state.status) return false;
         if (state.product && l.product !== state.product) return false;
         if (state.source && l.source !== state.source) return false;
@@ -301,7 +304,7 @@ function render() {
   document.getElementById("cOverdue").textContent = s.overdue;
   document.getElementById("cToday").textContent = s.dueToday;
   document.getElementById("saveStatus").textContent =
-    (state.pendingOnly ? "Pending — " : "All — ") + leads.length + " leads" + (state.pendingOnly ? " (converted hidden)" : "");
+    (state.pendingOnly ? "Active — " : "All — ") + leads.length + " leads" + (state.pendingOnly ? " (closed hidden)" : "");
 
   const data = filtered();
   const pages = Math.max(1, Math.ceil(data.length / pageSize));
