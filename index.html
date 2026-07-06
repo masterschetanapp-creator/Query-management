@@ -55,6 +55,7 @@
         <select id="sourceFilter" class="legacy-filter" onchange="state.source=this.value;state.page=1;render()"><option value="">All Sources</option></select>
         <select id="dueFilter" class="legacy-filter" onchange="state.due=this.value;state.page=1;render()"><option value="">All Follow-ups</option><option value="today">Due Today</option><option value="overdue">Overdue</option><option value="upcoming">Upcoming</option><option value="none">No Follow-up</option></select>
         <div class="actions">
+          <button class="btn gray" id="togglePending" onclick="togglePending()" style="font-size:12px">Show All</button>
           <button class="btn primary" onclick="openLead()">Add Lead</button>
           <button class="btn blue" onclick="exportCSV()">Export CSV</button>
           <button class="btn gray" onclick="openQueryBuilder()">Custom Filter</button>
@@ -92,13 +93,14 @@
         <select id="deptFilter" onchange="qState.dept=this.value;qState.page=1;renderQueriesTab()"><option value="">All Departments</option></select>
         <select id="qStatusFilter" onchange="qState.status=this.value;qState.page=1;renderQueriesTab()"><option value="">All Status</option><option value="Open">Open</option><option value="Under Process">Under Process</option><option value="Resolved">Resolved</option></select>
         <div class="actions">
+          <button class="btn gray" id="qTogglePending" onclick="toggleQPending()" style="font-size:12px">Show All</button>
           <button class="btn primary" onclick="openQueryForm()">Add Query</button>
           <button class="btn blue" onclick="exportQueriesCSV()">Export CSV</button>
         </div>
       </section>
       <section class="panel">
         <div class="bar">
-          <div><strong>Service Queries</strong><span class="statusline">Firebase-synced</span></div>
+          <div><strong>Service Queries</strong><span class="statusline" id="qSaveStatus">Firebase-synced</span></div>
           <div class="actions">
             <button class="btn gray" onclick="downloadQueriesDB()">Download DB</button>
           </div>

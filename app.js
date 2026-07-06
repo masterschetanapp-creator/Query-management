@@ -49,13 +49,29 @@ const pageSize = 25;
 let unsubscribeLeads = null;
 let authInitialized = false;
 
-const state = { q: "", status: "", product: "", source: "", due: "", page: 1 };
+const state = { q: "", status: "", product: "", source: "", due: "", page: 1, pendingOnly: true };
 window.state = state;
+
+function togglePending() {
+  state.pendingOnly = !state.pendingOnly;
+  state.page = 1;
+  document.getElementById("togglePending").textContent = state.pendingOnly ? "Show All" : "Pending Only";
+  render();
+}
+window.togglePending = togglePending;
 let queries = [];
 let queryEditingId = null;
 let unsubscribeQueries = null;
-const qState = { q: "", dept: "", status: "", page: 1 };
+const qState = { q: "", dept: "", status: "", page: 1, pendingOnly: true };
 window.qState = qState;
+
+function toggleQPending() {
+  qState.pendingOnly = !qState.pendingOnly;
+  qState.page = 1;
+  document.getElementById("qTogglePending").textContent = qState.pendingOnly ? "Show All" : "Pending Only";
+  renderQueriesTab();
+}
+window.toggleQPending = toggleQPending;
 let activeTab = "leads";
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -255,6 +271,7 @@ function filtered() {
   return leads
     .filter((l) => {
       if (!activeQuery) {
+        if (state.pendingOnly && !state.status && norm(l.status).toLowerCase().includes("convert")) return false;
         if (state.status && l.status !== state.status) return false;
         if (state.product && l.product !== state.product) return false;
         if (state.source && l.source !== state.source) return false;
@@ -284,7 +301,7 @@ function render() {
   document.getElementById("cOverdue").textContent = s.overdue;
   document.getElementById("cToday").textContent = s.dueToday;
   document.getElementById("saveStatus").textContent =
-    "Syncing via Firebase — " + leads.length + " leads";
+    (state.pendingOnly ? "Pending — " : "All — ") + leads.length + " leads" + (state.pendingOnly ? " (converted hidden)" : "");
 
   const data = filtered();
   const pages = Math.max(1, Math.ceil(data.length / pageSize));
@@ -539,6 +556,8 @@ function queryStats() {
 
 function renderQueriesTab() {
   const s = queryStats();
+  document.getElementById("qSaveStatus").textContent =
+    (qState.pendingOnly ? "Pending — " : "All — ") + queries.length + " queries" + (qState.pendingOnly ? " (resolved hidden)" : "");
   document.getElementById("qcTotal").textContent = s.total;
   document.getElementById("qcOpen").textContent = s.open;
   document.getElementById("qcProcess").textContent = s.process;
@@ -550,6 +569,7 @@ function renderQueriesTab() {
   const st = document.getElementById("qStatusFilter").value;
 
   let filtered = queries.filter(q => {
+    if (qState.pendingOnly && !st && norm(q.status) === "resolved") return false;
     if (dept && q.department !== dept) return false;
     if (st && norm(q.status) !== st) return false;
     if (sq && !Object.values(q).join(" ").toLowerCase().includes(sq)) return false;
@@ -664,6 +684,7 @@ function exportQueriesCSV() {
   const dept = document.getElementById("deptFilter").value;
   const st = document.getElementById("qStatusFilter").value;
   let filtered = queries.filter(q => {
+    if (qState.pendingOnly && !st && norm(q.status) === "resolved") return false;
     if (dept && q.department !== dept) return false;
     if (st && norm(q.status) !== st) return false;
     if (sq && !Object.values(q).join(" ").toLowerCase().includes(sq)) return false;
